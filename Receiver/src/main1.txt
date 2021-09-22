@@ -1,0 +1,45 @@
+#include <Arduino.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+//I2C OLED with address 0x3C
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_SCL D1
+#define OLED_SCA D2
+#define OLED_RESET -1
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+void TextDisplay()
+{
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(5,28);
+  display.println("Electronics Hub");
+  display.display();
+  delay(3000);
+}
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  Wire.begin();
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+
+  //Clear Display
+  display.clearDisplay();
+  display.display();
+  delay(100);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+}

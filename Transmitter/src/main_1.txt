@@ -1,0 +1,83 @@
+#include <Arduino.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <Bounce2.h>
+
+/*
+Useful Links:
+https://github.com/nodemcu/nodemcu-devkit-v1.0 - Schematic/Gerbers
+
+*/
+
+
+/****************Configure Number of Switched to LEDs Here****************/
+//Input Swtiches to control circuitary
+#define SWITCH1 12
+#define SWITCH2 11
+ 
+//OutPut LEDs to indicate switch is on
+#define LED_CTRL1 13
+#define LED_CTRL2 9
+
+Bounce bounce = Bounce();
+
+
+/**************************Configure OLED Display Here********************/
+//I2C OLED with address 0x3C
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_SCL D1
+#define OLED_SCA D2
+#define OLED_RESET -1
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+/*********************Configure HC12/LoRa Moudle Here********************/
+
+
+
+void TextDisplay(char *ptr)
+{
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(5,28);
+  display.println(ptr);
+  display.display();
+  delay(3000);
+}
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+
+  Wire.begin();
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+
+  //Clear Display
+  display.clearDisplay();
+  display.display();
+  //delay(100);
+}
+
+void loop() {
+  char c;
+  char *str = "Hello";
+  // put your main code here, to run repeatedly:
+  
+  if(Serial.available() ) 
+  {
+    c = Serial.read() ;
+    Serial.print ( c ) ;
+    TextDisplay(str);
+    //digitalWrite( LED, ! digitalRead(LED) ) ;
+  }
+}
+
+
